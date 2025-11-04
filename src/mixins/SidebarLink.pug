@@ -1,0 +1,17 @@
+mixin router-link-mixin(url)
+  if url === "/"
+    router-link(to=url :class="{current: $route.path.length === 1}").button.sidenav-button.is-large
+      block
+  else
+    router-link(to=url :class="{current: $route.path.includes('" + url + "')}").button.sidenav-button.is-large
+      block
+
+mixin sidebar-link(url, text, icon)
+  +router-link-mixin(url)
+    div
+      b-tooltip(label=text position="is-right" active=false)
+        span.icon.is-medium
+          //- Inserted here to get it from the parameter
+          i(class=icon :class="{'icon-translate': !detail}").fa.translateable-icon
+          
+    span(:class="{visible: detail}").sidebar-text= text

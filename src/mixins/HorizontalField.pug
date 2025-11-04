@@ -1,0 +1,10 @@
+mixin horizontal-field(label)
+  div.field.is-horizontal
+    div.field-label.is-normal
+      label.label= label
+
+    div.field-body
+      if block
+        block
+      else
+        p ###NO CONTENT!!! YOU SHOULD REALLY PUT SOMETHING HERE###
