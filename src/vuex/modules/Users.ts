@@ -15,7 +15,7 @@ const Users: Module<any, any> = {
   },
   state: {
     users: [],
-    roles: [{ name: "ROLE_USER", description: null }, { name: "ROLE_ADMIN", description: null }],
+    roles: [{ name: "ROLE_ADMIN", description: null }],
   },
   getters: {
     // Return the user with the specified username
