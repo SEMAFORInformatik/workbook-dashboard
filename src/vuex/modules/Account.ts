@@ -2,7 +2,8 @@ import { Module, ActionContext } from "vuex";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import defaultConfig from "../../env-config";
 import instance from "../../axios-instance";
-import { OAuth2Client } from "@badgateway/oauth2-client";
+import { OAuth2Client, generateCodeVerifier } from "@badgateway/oauth2-client";
+
 
 const Account: Module<any, any> = {
   namespaced: true,
@@ -77,6 +78,7 @@ const Account: Module<any, any> = {
             });
         });
       } else if (method === "auth-oidc") {
+        const codeVerifier = await generateCodeVerifier();
         const springProps = await defaultConfig.springProps;
         const client = new OAuth2Client({
           authorizationEndpoint: springProps.authorizationEndpoint,
@@ -89,7 +91,7 @@ const Account: Module<any, any> = {
           // URL in the app that the user should get redirected to after authenticating
           redirectUri: springProps.dashboardUrl,
 
-          // codeVerifier,
+          codeVerifier,
 
           scope: ['roles'],
 
