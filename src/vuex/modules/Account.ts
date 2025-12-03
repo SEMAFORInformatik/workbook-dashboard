@@ -92,6 +92,9 @@ const Account: Module<any, any> = {
           redirectUri: springProps.dashboardUrl,
 
           codeVerifier,
+
+          scope: ["openid", "profile", "email"],
+
         });
       }
     },
