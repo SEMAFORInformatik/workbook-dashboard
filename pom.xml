@@ -26,8 +26,8 @@
             <phase>generate-resources</phase>
             <configuration>
               <!-- See https://nodejs.org/en/download/ for latest node and npm (lts) versions -->
-              <nodeVersion>v20.6.1</nodeVersion>
-              <npmVersion>9.8.1</npmVersion>
+              <nodeVersion>v22.13.1</nodeVersion>
+              <npmVersion>10.9.2</npmVersion>
             </configuration>
           </execution>
 

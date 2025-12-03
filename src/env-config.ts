@@ -1,3 +1,4 @@
+import { generateCodeVerifier } from "@badgateway/oauth2-client";
 import { CustomWindow } from "./models";
 declare let window: CustomWindow;
 
@@ -11,12 +12,17 @@ interface SpringProps {
   noAuth: boolean
 }
 
+if (!window.sessionStorage.getItem("code_verifier")) {
+  window.sessionStorage.setItem("code_verifier", await generateCodeVerifier());
+}
+
 interface WebAdminConfiguration {
   springProps: Promise<SpringProps>,
   apiPath: string;
   apiDocs: string;
   migrationPath: string;
   statusPath: string;
+  codeVerifier: string;
 }
 
 let initialized = false;
@@ -50,6 +56,7 @@ let defaultConfig: WebAdminConfiguration = {
   apiDocs: "/v3/api-docs",
   migrationPath: "/services/liquibase", // api path for liquibase migrations
   statusPath: "/services/management", // configured path of spring actuator
+  get codeVerifier() { return window.sessionStorage.getItem("code_verifier")}
 };
 
 export default defaultConfig;

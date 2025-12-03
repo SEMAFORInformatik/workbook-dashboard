@@ -23,7 +23,7 @@ div#app
 import Sidebar from "./Sidebar.vue";
 import defaultConfig from "../env-config";
 import instance from "../axios-instance";
-import { OAuth2Client } from '@badgateway/oauth2-client';
+import { OAuth2Client, generateCodeVerifier } from '@badgateway/oauth2-client';
 
 export default {
   async created() {
@@ -48,6 +48,7 @@ export default {
             document.location as any,
             {
               redirectUri: springProps.dashboardUrl,
+              codeVerifier: defaultConfig.codeVerifier,
             }
           );
 

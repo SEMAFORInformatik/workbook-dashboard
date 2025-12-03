@@ -78,7 +78,6 @@ const Account: Module<any, any> = {
             });
         });
       } else if (method === "auth-oidc") {
-        const codeVerifier = await generateCodeVerifier();
         const springProps = await defaultConfig.springProps;
         const client = new OAuth2Client({
           authorizationEndpoint: springProps.authorizationEndpoint,
@@ -91,7 +90,7 @@ const Account: Module<any, any> = {
           // URL in the app that the user should get redirected to after authenticating
           redirectUri: springProps.dashboardUrl,
 
-          codeVerifier,
+          codeVerifier: defaultConfig.codeVerifier,
 
           scope: ["openid", "profile", "email"],
 
