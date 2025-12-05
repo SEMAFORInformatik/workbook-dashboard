@@ -64,13 +64,13 @@ export default {
             const token = window.sessionStorage.getItem("jwt");
             this.$store.commit("Account/setLoggedIn", true)
             instance.defaults.headers.common['Authorization'] = token;
-            try {
-              await instance.get(`${defaultConfig.apiPath}/users`);
-              this.$store.commit("Account/setAdmin", true)
-            } finally {
-              this.$router.push("/")
-            }
           }
+        }
+        try {
+          await instance.get(`${defaultConfig.apiPath}/users`);
+          this.$store.commit("Account/setAdmin", true)
+        } finally {
+          this.$router.push("/")
         }
       } else {
         const token = window.sessionStorage.getItem("jwt")

@@ -12,30 +12,32 @@ form(@submit.prevent="saveUser")
       +horizontal-field("First name")
         div.field
           div.control
-            input(type="text" v-model="user.firstName" placeholder="First name").input.is-medium
+            input(type="text" v-model="user.firstName" placeholder="First name" :disabled="hasOauth").input.is-medium
 
       +horizontal-field("Last name")
         div.field
           div.control
-            input(type="text" v-model="user.lastName" placeholder="Last name").input.is-medium
+            input(type="text" v-model="user.lastName" placeholder="Last name" :disabled="hasOauth").input.is-medium
 
-      +horizontal-field("Password")
-        div.field
-          div.control
-            input(type="password" v-model="user.password" placeholder="Password").input.is-medium
+      template(v-if="!hasOauth")
+        +horizontal-field("Password")
+          div.field
+            div.control
+              input(type="password" v-model="user.password" placeholder="Password").input.is-medium
 
-      +horizontal-field("Enabled")
-        div.field
-          div.control
-            label.checkbox
-              input(type="checkbox" v-model="user.enabled")
+        +horizontal-field("Enabled")
+          div.field
+            div.control
+              label.checkbox
+                input(type="checkbox" v-model="user.enabled")
 
-      +horizontal-field("Active Group")
-        div.field
-          div.control
-            div.select
-              select(v-model="user.activeGroup")
-                option(v-for="group in user.groups" :key="group.name" :value="group") {{group.name}}
+      div
+        +horizontal-field("Active Group")
+          div.field
+            div.control
+              div.select
+                select(v-model="user.activeGroup" :disabled="hasOauth && oauthGroups")
+                  option(v-for="group in user.groups" :key="group.name" :value="group") {{group.name}}
 
     div.column.is-2-desktop.is-3-tablet
       div.field
@@ -43,12 +45,12 @@ form(@submit.prevent="saveUser")
         div.checkbox-list
           div(v-for="group in $store.state.Users.Groups.groups").control
             label.checkbox
-              input(type="checkbox" :value="group" v-model="user.groups")
+              input(type="checkbox" :value="group" v-model="user.groups" :disabled="hasOauth && oauthGroups")
               span {{group.name}}
                 span.icon.is-small
                   i.fa.fa-check
 
-    div.column.is-2-desktop.is-3-tablet
+    div.column.is-2-desktop.is-3-tablet(v-if="!hasOauth")
       div.field
         div.label Roles
         div.checkbox-list
@@ -71,18 +73,23 @@ form(@submit.prevent="saveUser")
 </template>
 
 <script lang="ts">
+import defaultConfig from "../../env-config";
 import { clone, isSame, escapeHtml, User, Group } from "../../models";
 
 export default {
-  created() {
+  async created() {
     this.getUser();
+    this.hasOauth = !!(await defaultConfig.springProps).clientId
+    this.oauthGroups = !!(await defaultConfig.springProps).useOauthGroups
   },
 
   data() {
     return {
       user: {},
 
-      saving: false
+      saving: false,
+      hasOauth: false,
+      oauthGroups: true,
     };
   },
   watch: {
@@ -230,6 +237,14 @@ $list-selected: #63ed85;
       .icon {
         opacity: 1;
       }
+    }
+    & > input:disabled:not(:checked) + span {
+      // If the checkbox is checked apply a dark background around the entire thing
+      background: lightgrey;
+    }
+    & > input:disabled + span {
+      // If the checkbox is checked apply a dark background around the entire thing
+      filter:grayscale(0.5);
     }
   }
 }

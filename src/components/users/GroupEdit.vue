@@ -1,8 +1,8 @@
 <template lang="pug">
-tr(@click.prevent="edit")
+tr(@click.prevent="edit" :class="{disabled}")
   td
     //- v-show so that vue can get a reference to the element
-    div(v-show="editing")
+    div(v-show="editing && !disabled")
       div.field
         div(:class="{'is-loading': loading}").control
           input(type="text"
@@ -12,14 +12,14 @@ tr(@click.prevent="edit")
             v-model="tempName"
             ref="nameInput").input.is-fullwidth.group-edit-field
 
-    span(v-show="!editing") {{group.name}}
+    span(v-show="!editing || disabled") {{group.name}}
 </template>
 
 <script lang="ts">
 import { escapeHtml } from "../../models";
 
 export default {
-  props: ["group"],
+  props: ["group", "disabled"],
   created() {
     this.tempName = this.group.name;
   },
@@ -85,5 +85,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.disabled {
+  background: lightgrey !important;
+  border-color: grey;
+}
 </style>

@@ -15,6 +15,9 @@ export default defineConfig({
     proxy: {
       '/workbook': {
         target: 'http://localhost:8080/',
+      },
+      '/properties': {
+        target: 'http://localhost:8080/workbook',
       }
     }
   },

@@ -10,6 +10,8 @@ interface SpringProps {
   dashboardUrl?: string
   shardMode?: "main" | "replica"
   noAuth: boolean
+  oauthAdditionalClaims: string[] | null;
+  useOauthGroups: boolean;
 }
 
 if (!window.sessionStorage.getItem("code_verifier")) {

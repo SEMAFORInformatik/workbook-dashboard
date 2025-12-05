@@ -7,10 +7,10 @@ div
           th Group
 
       tbody
-        group-edit(v-for="group in $store.state.Users.Groups.groups" :group="group" :key="group.name").clickable-row
+        group-edit(v-for="group in $store.state.Users.Groups.groups" :group="group" :key="group.name" :disabled="hasOauth && oauthGroups").clickable-row
           td {{group.name}}
 
-  form(@submit.prevent="addGroup")
+  form(@submit.prevent="addGroup" v-if="!hasOauth || !oauthGroups")
     div.field.has-addons
       div.control.is-expanded
           input(type="text" placeholder="Group name" v-model="newGroupName").input.is-info
@@ -21,10 +21,15 @@ div
 </template>
 
 <script lang="ts">
+import defaultConfig from "../../env-config";
 import { Group, escapeHtml } from "../../models";
 import GroupEdit from "./GroupEdit.vue";
 
 export default {
+  async created() {
+    this.hasOauth = !!(await defaultConfig.springProps).clientId
+    this.oauthGroups = !!(await defaultConfig.springProps).useOauthGroups
+  },
   components: {
     GroupEdit
   },
@@ -32,7 +37,9 @@ export default {
     return {
       newGroupName: "",
 
-      error: false
+      error: false,
+      hasOauth: false,
+      oauthGroups: true,
     };
   },
   methods: {

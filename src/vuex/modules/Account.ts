@@ -92,7 +92,7 @@ const Account: Module<any, any> = {
 
           codeVerifier: defaultConfig.codeVerifier,
 
-          scope: ["openid", "profile", "email"],
+          scope: ["openid", "profile", "email", ...(springProps.oauthAdditionalClaims || [])],
 
         });
       }
