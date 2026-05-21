@@ -37,6 +37,11 @@ const Account: Module<any, any> = {
     },
     setLoggedIn: (state, loggedIn: Boolean) => {
       state.loggedIn = loggedIn;
+      if (window.sessionStorage.getItem("wantURILogin") === "1") {
+        window.sessionStorage.removeItem("wantURILogin")
+        const token = window.sessionStorage.getItem("jwt").replace("Bearer ", "")
+        document.location = `intens:///LOGIN?jwt=${token}`
+      }
     }
   },
   actions: {
@@ -85,16 +90,20 @@ const Account: Module<any, any> = {
           clientId: springProps.clientId,
         });
 
-        document.location = await client.authorizationCode.getAuthorizeUri({
+        try {
+          document.location = await client.authorizationCode.getAuthorizeUri({
 
-          // URL in the app that the user should get redirected to after authenticating
-          redirectUri: springProps.dashboardUrl,
+            // URL in the app that the user should get redirected to after authenticating
+            redirectUri: springProps.dashboardUrl,
 
-          codeVerifier: defaultConfig.codeVerifier,
+            codeVerifier: defaultConfig.codeVerifier,
 
-          scope: ["openid", "profile", "email", ...(springProps.oauthAdditionalClaims || [])],
+            scope: ["openid", "profile", "email", ...(springProps.oauthAdditionalClaims || [])],
 
-        });
+          });
+        } catch (e) {
+          console.error("OAUTH only available on https", e)
+        }
       }
     },
     logout: (context: ActionContext<any, any>) => {

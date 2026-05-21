@@ -1,47 +1,50 @@
 <template>
   <div>
-    <h2 class="title is-2">Database imports and exports</h2>
-    <p class="container block">Current workbook mode: {{ shardMode }}</p>
-    <div class="columns" style="position: relative">
-      <b-loading
-        :is-full-page="isLoadingFullscreen"
-        v-model="isLoading"
-      ></b-loading>
-      <div class="column is-3-desktop is-3-tablet card">
-        <h3 class="subtitle is-3">
-          Import {{ shardMode === "main" ? "modifications" : "database" }} file
-        </h3>
-        <b-field class="file is-primary-light" :class="{ 'has-name': !!file }">
-          <b-upload v-model="file" class="file-label">
-            <span class="file-cta">
-              <b-icon class="file-icon" icon="upload"></b-icon>
-              <span class="file-label">Click to upload</span>
-            </span>
-            <span class="file-name" v-if="file">
-              {{ file.name }}
-            </span>
-          </b-upload>
-        </b-field>
-        <b-button class="is-primary" @click="uploadFile"> Import </b-button>
-      </div>
+    <a :href="`intens:///LOGIN?jwt=${token}`" class="button is-primary">Login to local ITENS</a>
+    <template v-if="shardMode">
+      <h2 class="title is-2">Database imports and exports</h2>
+      <p class="container block">Current workbook mode: {{ shardMode }}</p>
+      <div class="columns" style="position: relative">
+        <b-loading
+          :is-full-page="isLoadingFullscreen"
+          v-model="isLoading"
+        ></b-loading>
+        <div class="column is-3-desktop is-3-tablet card">
+          <h3 class="subtitle is-3">
+            Import {{ shardMode === "main" ? "modifications" : "database" }} file
+          </h3>
+          <b-field class="file is-primary-light" :class="{ 'has-name': !!file }">
+            <b-upload v-model="file" class="file-label">
+              <span class="file-cta">
+                <b-icon class="file-icon" icon="upload"></b-icon>
+                <span class="file-label">Click to upload</span>
+              </span>
+              <span class="file-name" v-if="file">
+                {{ file.name }}
+              </span>
+            </b-upload>
+          </b-field>
+          <b-button class="is-primary" @click="uploadFile"> Import </b-button>
+        </div>
 
-      <div class="column is-3-desktop is-3-tablet card">
-        <h3 class="subtitle is-3">
-          Export {{ shardMode === "replica" ? "modifications" : "database" }} to
-          file
-        </h3>
-        <b-button
-          class="is-primary"
-          @click="
-            shardMode === 'main'
-              ? downloadFile('export.json')
-              : downloadFile('modifications.json')
-          "
-        >
-          Export
-        </b-button>
+        <div class="column is-3-desktop is-3-tablet card">
+          <h3 class="subtitle is-3">
+            Export {{ shardMode === "replica" ? "modifications" : "database" }} to
+            file
+          </h3>
+          <b-button
+            class="is-primary"
+            @click="
+              shardMode === 'main'
+                ? downloadFile('export.json')
+                : downloadFile('modifications.json')
+            "
+          >
+            Export
+          </b-button>
+        </div>
       </div>
-    </div>
+    </template>
     <b-modal
       v-model="mainImportModalOpen"
       has-modal-card
@@ -110,10 +113,12 @@ export default {
       showWarning: false,
       shardMode: "",
       mainImportModalOpen: false,
+      token : "",
     };
   },
   async created() {
     this.shardMode = (await defaultConfig.springProps).shardMode;
+    this.token = window.sessionStorage.getItem("jwt").replace("Bearer ", "")
   },
   methods: {
     async uploadFile() {

@@ -27,6 +27,9 @@ import { OAuth2Client, generateCodeVerifier } from '@badgateway/oauth2-client';
 
 export default {
   async created() {
+    if (document.location.search.endsWith("desktopLogin")) {
+      window.sessionStorage.setItem("wantURILogin", "1")
+    }
     const springProps = await defaultConfig.springProps
     this.hasAuth = !springProps.noAuth || springProps.shardMode === null
     console.log(springProps)
@@ -53,8 +56,8 @@ export default {
           );
 
           const token = `Bearer ${oauth2Token.accessToken}`;
-          this.$store.commit("Account/setLoggedIn", true)
           window.sessionStorage.setItem("jwt", token);
+          this.$store.commit("Account/setLoggedIn", true)
           instance.defaults.headers.common['Authorization'] = token;
           // Remove authorization_code path param from url
           window.history.replaceState(null, '', window.location.pathname);
